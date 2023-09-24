@@ -6,8 +6,6 @@ from langchain.schema import HumanMessage, SystemMessage
 from pathlib import Path
 from collections import deque
 
-TEMP_DIR = os.environ.get("TEMP_DIR", "/Users/shawncook/Projects/CakeDocsAi/pythonEnv_3.8/tmp")
-
 def find_repo_folder(directory):
     # Find the name of the folder in the specified directory
     folder_name = None
@@ -99,8 +97,7 @@ def bfs_folder_search(text_length_limit=4000, folder_path="./code_repo"):
 def get_repo_structure(code_repo_path="./code_repo"):
     return bfs_folder_search(4000, code_repo_path)
 
-def clone_repo(git_url):
-    code_repo_path = TEMP_DIR + "/code_repo"
+def clone_repo(git_url, code_repo_path):
     print("Cloning the repo:[", git_url, "] code_repo_path:[", code_repo_path,"]")
     # Check if directory exists
     if not os.path.exists(code_repo_path):

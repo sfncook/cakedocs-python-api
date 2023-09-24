@@ -1,6 +1,7 @@
 import functions_framework
 from vector_db import doIt
 from git_clone import clone_repo
+from create_vdb import create_vdb
 
 @functions_framework.http
 def http_llm(request):
@@ -9,6 +10,9 @@ def http_llm(request):
     if request.method == 'POST' and 'git_clone' in request.path:
         request_json = request.get_json(silent=True)
         return clone_repo(request_json['git_url'])
+    if request.method == 'POST' and 'create_vdb' in request.path:
+        request_json = request.get_json(silent=True)
+        return create_vdb(request_json['git_url'])
 #     return doIt()
 #     request_json = request.get_json(silent=True)
 #     request_args = request.args

@@ -22,6 +22,13 @@ def test_llm_git_clone():
     response = http_llm(request)
     print(response)
 
+def test_llm_create_vdb():
+    request = MockRequest(json_data={'git_url': 'https://github.com/sfncook/designGuiStatic'})
+    request.path = '/create_vdb'
+    request.method = 'POST'
+    response = http_llm(request)
+    print(response)
+
 def test_clone_repo():
     git_url = 'https://github.com/sfncook/designGuiStatic'
     print(clone_repo(git_url))
@@ -29,4 +36,5 @@ def test_clone_repo():
 if __name__ == '__main__':
 #     test_clone_repo()
 #     test_llm_http()
-    test_llm_git_clone()
+#     test_llm_git_clone()
+    test_llm_create_vdb()
