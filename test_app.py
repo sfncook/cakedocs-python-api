@@ -1,5 +1,5 @@
 from main import http_llm
-from create_vector_db import clone_repo
+from git_clone import clone_repo
 
 # Create a mock Flask request object to simulate an HTTP request
 class MockRequest:
@@ -15,10 +15,18 @@ def test_llm_http():
     response = http_llm(request)
     print(response)
 
+def test_llm_git_clone():
+    request = MockRequest(json_data={'git_url': 'https://github.com/sfncook/designGuiStatic'})
+    request.path = '/llm/git_clone'
+    request.method = 'POST'
+    response = http_llm(request)
+    print(response)
+
 def test_clone_repo():
     git_url = 'https://github.com/sfncook/designGuiStatic'
-    clone_repo(git_url)
+    print(clone_repo(git_url))
 
 if __name__ == '__main__':
-    test_clone_repo()
+#     test_clone_repo()
 #     test_llm_http()
+    test_llm_git_clone()
