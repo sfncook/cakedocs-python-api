@@ -15,18 +15,16 @@ init_system_prompt = """Now you are an expert programmer and teacher of a code r
     If you need any details clarified, please ask questions until all issues are clarified. \n\n
 """
 
-def load_local_vdb(vdb_path):
-    with open(vdb_path, "rb") as f:
-        faiss_store = pickle.load(f)
-    return faiss_store
-
-def generate_or_load_knowledge_from_repo():
+def query_vdb(query):
     vdb_path = "vector-db.pkl"
-    vdb = load_local_vdb(vdb_path)
-    return vdb
-
-def get_repo_context(query, vdb):
+    print("Loading vector database...")
+    with open(vdb_path, "rb") as f:
+        vdb = pickle.load(f)
+    print("Vector database loaded.")
+    print("Searching for similar contexts...")
+    print(query)
     matched_docs = vdb.similarity_search(query, k=10)
+    print("Search completed.")
     output = ""
     for idx, docs in enumerate(matched_docs):
         output += f"Context {idx}:\n"
@@ -34,18 +32,12 @@ def get_repo_context(query, vdb):
         output += "\n\n"
     return output
 
-def user_input_handler(input):
-    vdb = generate_or_load_knowledge_from_repo()
-    context = get_repo_context(input, vdb)
-    prompt = input + "\n\n" + \
-             f"Here are some contexts about the question, which are ranked by the relevance to the question: \n\n" + context
-    return prompt
-
 def generate_response(system_msg, inputs, top_p, temperature, chat_counter, chatbot=[], history=[]):
     orig_inputs = inputs
 
-    # Inputs are pre-processed with extra tools
-    inputs = user_input_handler(inputs)
+    context = query_vdb(inputs)
+    inputs = inputs + "\n\n" + \
+        f"Here are some contexts about the question, which are ranked by the relevance to the question: \n\n" + context
 
     token_limit = 8000
     if len(inputs) > token_limit:

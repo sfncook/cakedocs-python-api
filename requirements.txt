@@ -1,3 +1,6 @@
 functions-framework==3.*
 requests
 langchain
+openai
+faiss-cpu
+tiktoken

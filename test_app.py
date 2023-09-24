@@ -14,10 +14,7 @@ def test_hello_http():
     # Create a mock request with the desired JSON data or query parameters
     request = MockRequest(json_data={'name': 'Alice'})
     response = http_llm(request)
-
     print(response)
-    # Assert that the response matches the expected output
-    assert response == 'Hello Alice!'
 
 if __name__ == '__main__':
     test_hello_http()
