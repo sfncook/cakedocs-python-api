@@ -6,7 +6,7 @@ from git_clone import clone_repo
 def http_llm(request):
     print(request.method)
     print(request.path)
-    if request.method == 'POST' and request.path == '/llm/git_clone':
+    if request.method == 'POST' and 'git_clone' in request.path:
         request_json = request.get_json(silent=True)
         return clone_repo(request_json['git_url'])
 #     return doIt()

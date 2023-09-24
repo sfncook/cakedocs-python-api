@@ -17,7 +17,7 @@ def test_llm_http():
 
 def test_llm_git_clone():
     request = MockRequest(json_data={'git_url': 'https://github.com/sfncook/designGuiStatic'})
-    request.path = '/llm/git_clone'
+    request.path = '/git_clone'
     request.method = 'POST'
     response = http_llm(request)
     print(response)
