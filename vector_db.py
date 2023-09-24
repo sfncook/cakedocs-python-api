@@ -3,8 +3,6 @@ import os
 import requests
 
 OPENAI_API_KEY = os.environ.get("OPENAI_API_KEY", "null")
-# API_URL = "http://localhost:8080/v1/chat/completions"
-# model = "ggml-gpt4all-j"
 API_URL = "https://api.openai.com/v1/chat/completions"
 model = "gpt-3.5-turbo"
 
@@ -22,8 +20,8 @@ def load_local_vdb(vdb_path):
         faiss_store = pickle.load(f)
     return faiss_store
 
-def generate_or_load_knowledge_from_repo(dir_path="./code_repo"):
-    vdb_path = "./cloudFunctions/vdb-GPT-Code-Learner-docs-.git.pkl"
+def generate_or_load_knowledge_from_repo():
+    vdb_path = "vector-db.pkl"
     vdb = load_local_vdb(vdb_path)
     return vdb
 
@@ -149,4 +147,4 @@ def doIt():
     chat_counter = 0
     chatbot = []
     history = []
-    generate_response(system_msg, inputs, top_p, temperature, chat_counter, chatbot, history)
+    return generate_response(system_msg, inputs, top_p, temperature, chat_counter, chatbot, history)
