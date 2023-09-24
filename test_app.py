@@ -1,4 +1,5 @@
 from main import http_llm
+from create_vector_db import clone_repo
 
 # Create a mock Flask request object to simulate an HTTP request
 class MockRequest:
@@ -9,12 +10,15 @@ class MockRequest:
     def get_json(self, silent=True):
         return self.json_data
 
-# Test your Cloud Function
-def test_hello_http():
-    # Create a mock request with the desired JSON data or query parameters
+def test_llm_http():
     request = MockRequest(json_data={'name': 'Alice'})
     response = http_llm(request)
     print(response)
 
+def test_clone_repo():
+    git_url = 'https://github.com/sfncook/designGuiStatic'
+    clone_repo(git_url)
+
 if __name__ == '__main__':
-    test_hello_http()
+    test_clone_repo()
+#     test_llm_http()
