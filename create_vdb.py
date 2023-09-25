@@ -1,5 +1,5 @@
 import os
-from git_clone import clone_repo
+from clone_repo import clone_repo
 from langchain.text_splitter import RecursiveCharacterTextSplitter, CharacterTextSplitter
 from langchain.document_loaders import TextLoader, PyPDFLoader
 from langchain.embeddings.openai import OpenAIEmbeddings

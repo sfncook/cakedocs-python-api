@@ -1,5 +1,5 @@
 from main import http_llm
-from git_clone import clone_repo
+from clone_repo import clone_repo
 from upload_vdb import upload_vdb
 
 # Create a mock Flask request object to simulate an HTTP request
@@ -18,7 +18,7 @@ def test_llm_http():
 
 def test_llm_git_clone():
     request = MockRequest(json_data={'git_url': 'https://github.com/sfncook/hello'})
-    request.path = '/git_clone'
+    request.path = '/clone_repo'
     request.method = 'POST'
     response = http_llm(request)
     print(response)
