@@ -40,6 +40,6 @@ def test_clone_repo():
 if __name__ == '__main__':
 #     test_clone_repo()
 #     test_llm_http()
-    test_llm_git_clone()
-#     test_llm_create_vdb()
+#     test_llm_git_clone()
+    test_llm_create_vdb()
 #     test_llm_upload_vdb()

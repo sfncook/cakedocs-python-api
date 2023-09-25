@@ -11,12 +11,17 @@ CODE_REPO_DIR = TEMP_DIR + "/code_repo"
 def http_llm(request):
     print(request.method)
     print(request.path)
-    if request.method == 'POST' and 'clone_repo' in request.path:
+
+    if 'clone_repo' in request.path and request.method == 'POST':
         request_json = request.get_json(silent=True)
         return clone_repo(request_json['git_url'], CODE_REPO_DIR)
-    if request.method == 'POST' and 'create_vdb' in request.path:
+
+    if 'create_vdb' in request.path and request.method == 'POST':
         request_json = request.get_json(silent=True)
-        return create_vdb(request_json['git_url'])
+        repo_name = request_json['git_url'].split('/')[-1]
+        vdb_path = TEMP_DIR + "/vdb-" + repo_name + ".pkl"
+        return create_vdb(request_json['git_url'], CODE_REPO_DIR, vdb_path)
+
 #     return doIt()
 #     request_json = request.get_json(silent=True)
 #     request_args = request.args
