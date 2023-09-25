@@ -16,4 +16,3 @@ chardet
 sentence-transformers
 google-cloud-storage
 google-cloud-datastore
-shutil

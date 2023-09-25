@@ -22,7 +22,7 @@ def get_file_chunks(filename):
     return chunks
 
 def get_dir_chunks_recursively(dir_path):
-    ignore_list = ['.git', 'node_modules', '__pycache__', '.idea', '.vscode']
+    ignore_list = ['.git', 'node_modules', '__pycache__', '.idea', '.vscode', '.package-lock.json', 'yarn.lock']
     chunks = []
     for root, dirs, files in os.walk(dir_path):
         dirs[:] = [d for d in dirs if d not in ignore_list]  # modify dirs in-place
