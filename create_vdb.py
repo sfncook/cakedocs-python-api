@@ -8,13 +8,13 @@ import pickle
 
 TEMP_DIR = os.environ.get("TEMP_DIR", "/Users/shawncook/Projects/CakeDocsAi/pythonEnv_3.8/tmp")
 
-def load_documents(filenames):
+def tokenize_chunks(filenames):
     text_splitter = RecursiveCharacterTextSplitter(
         chunk_size=1500,
         chunk_overlap=200,
         length_function=len,
     )
-    docs = []
+    chunks = []
     for filename in filenames:
         if filename.endswith(".pdf"):
             loader = PyPDFLoader(filename)
@@ -22,9 +22,9 @@ def load_documents(filenames):
             loader = TextLoader(filename)
         documents = loader.load()
         splits = text_splitter.split_documents(documents)
-        docs.extend(splits)
+        chunks.extend(splits)
         print(f"Split {filename} into {len(splits)} chunks")
-    return docs
+    return chunks
 
 def generate_knowledge_from_repo(dir_path, ignore_list):
     knowledge = {"known_docs": [], "known_text": {"pages": [], "metadatas": []}}
@@ -36,11 +36,9 @@ def generate_knowledge_from_repo(dir_path, ignore_list):
             filepath = os.path.join(root, file)
             try:
                 # Using a more general way for code file parsing
-                knowledge["known_docs"].extend(load_documents([filepath]))
-
+                knowledge["known_docs"].extend(tokenize_chunks([filepath]))
             except Exception as e:
                 print(f"Failed to process {filepath} due to error: {str(e)}")
-
     return knowledge
 
 def local_vdb(knowledge, vdb_path=None):

@@ -1,5 +1,6 @@
 from main import http_llm
 from git_clone import clone_repo
+from upload_vdb import upload_vdb
 
 # Create a mock Flask request object to simulate an HTTP request
 class MockRequest:
@@ -16,18 +17,21 @@ def test_llm_http():
     print(response)
 
 def test_llm_git_clone():
-    request = MockRequest(json_data={'git_url': 'https://github.com/sfncook/designGuiStatic'})
+    request = MockRequest(json_data={'git_url': 'https://github.com/sfncook/hello'})
     request.path = '/git_clone'
     request.method = 'POST'
     response = http_llm(request)
     print(response)
 
 def test_llm_create_vdb():
-    request = MockRequest(json_data={'git_url': 'https://github.com/sfncook/designGuiStatic'})
+    request = MockRequest(json_data={'git_url': 'https://github.com/sfncook/hello'})
     request.path = '/create_vdb'
     request.method = 'POST'
     response = http_llm(request)
     print(response)
+
+def test_llm_upload_vdb():
+    upload_vdb("/Users/shawncook/Projects/CakeDocsAi/pythonEnv_3.8/tmp/vdb-designGuiStatic.pkl", 'vdb-designGuiStatic.pkl')
 
 def test_clone_repo():
     git_url = 'https://github.com/sfncook/designGuiStatic'
@@ -36,5 +40,6 @@ def test_clone_repo():
 if __name__ == '__main__':
 #     test_clone_repo()
 #     test_llm_http()
-#     test_llm_git_clone()
-    test_llm_create_vdb()
+    test_llm_git_clone()
+#     test_llm_create_vdb()
+#     test_llm_upload_vdb()

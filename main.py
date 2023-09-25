@@ -1,7 +1,11 @@
 import functions_framework
+import os
 from vector_db import doIt
 from git_clone import clone_repo
 from create_vdb import create_vdb
+
+TEMP_DIR = os.environ.get("TEMP_DIR", "/Users/shawncook/Projects/CakeDocsAi/pythonEnv_3.8/tmp")
+CODE_REPO_DIR = TEMP_DIR + "/code_repo"
 
 @functions_framework.http
 def http_llm(request):
@@ -9,7 +13,7 @@ def http_llm(request):
     print(request.path)
     if request.method == 'POST' and 'git_clone' in request.path:
         request_json = request.get_json(silent=True)
-        return clone_repo(request_json['git_url'])
+        return clone_repo(request_json['git_url'], CODE_REPO_DIR)
     if request.method == 'POST' and 'create_vdb' in request.path:
         request_json = request.get_json(silent=True)
         return create_vdb(request_json['git_url'])

@@ -1,5 +1,6 @@
 import os
 import json
+import shutil
 import subprocess
 from langchain.chat_models import ChatOpenAI
 from langchain.schema import HumanMessage, SystemMessage
@@ -98,24 +99,32 @@ def get_repo_structure(code_repo_path="./code_repo"):
     return bfs_folder_search(4000, code_repo_path)
 
 def clone_repo(git_url, code_repo_path):
-    print("Cloning the repo:[", git_url, "] code_repo_path:[", code_repo_path,"]")
-    # Check if directory exists
+    repo_name = git_url.split('/')[-1]
+    repo_clone_dir = code_repo_path + "/" + repo_name
+    print("Cloning the repo:[", git_url, "] repo_clone_dir:[", repo_clone_dir,"]")
+
     if not os.path.exists(code_repo_path):
         os.makedirs(code_repo_path)
+    if os.path.exists(repo_clone_dir):
+        shutil.rmtree(repo_clone_dir)
+        print(f"Deleted directory '{repo_clone_dir}'")
+
     try:
         subprocess.check_call(['git', 'clone', git_url], cwd=code_repo_path)
         print(f"Successfully cloned {git_url} into {code_repo_path}")
     except subprocess.CalledProcessError as e:
         print(f"Error: {e.output}")
 
-    print("Summarizing the repo...")
-    readme_info = get_readme(code_repo_path)
-    if readme_info is not None:
-        readme_info = """The README.md file is as follows: """ + readme_info + "\n\n"
+    return repo_name
 
-    print("Parsing repo structure...")
-    repo_structure = get_repo_structure(code_repo_path)
-    if repo_structure is not None:
-        repo_structure = """The repo structure is as follows: """ + get_repo_structure(code_repo_path) + "\n\n"
-
-    return readme_info + repo_structure
+#     print("Summarizing the repo...")
+#     readme_info = get_readme(code_repo_path)
+#     if readme_info is not None:
+#         readme_info = """The README.md file is as follows: """ + readme_info + "\n\n"
+#
+#     print("Parsing repo structure...")
+#     repo_structure = get_repo_structure(code_repo_path)
+#     if repo_structure is not None:
+#         repo_structure = """The repo structure is as follows: """ + get_repo_structure(code_repo_path) + "\n\n"
+#
+#     return readme_info + repo_structure
