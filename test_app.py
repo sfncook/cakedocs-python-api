@@ -1,6 +1,18 @@
 from main import http_llm
 from clone_repo import clone_repo
 from upload_vdb import upload_vdb
+import yaml
+import os
+
+try:
+    with open('../.env.yaml', 'r') as yaml_file:
+        env_vars = yaml.safe_load(yaml_file)
+        print("setting env vars")
+        os.environ['PINECONE_API_KEY'] = env_vars.get('PINECONE_API_KEY')
+        os.environ['PINECONE_ENVIRONMENT'] = env_vars.get('PINECONE_ENVIRONMENT')
+
+except FileNotFoundError:
+    print(f"YAML file '{yaml_file_path}' not found.")
 
 # Create a mock Flask request object to simulate an HTTP request
 class MockRequest:
