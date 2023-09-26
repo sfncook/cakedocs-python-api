@@ -8,8 +8,8 @@ try:
     with open('../.env.yaml', 'r') as yaml_file:
         env_vars = yaml.safe_load(yaml_file)
         print("setting env vars")
-        os.environ['PINECONE_API_KEY'] = env_vars.get('PINECONE_API_KEY')
-        os.environ['PINECONE_ENVIRONMENT'] = env_vars.get('PINECONE_ENVIRONMENT')
+        for key, value in env_vars.items():
+            os.environ[key] = value
 
 except FileNotFoundError:
     print(f"YAML file '{yaml_file_path}' not found.")
