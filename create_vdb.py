@@ -28,9 +28,9 @@ def get_dir_chunks_recursively(dir_path):
     chunks = []
     for root, dirs, files in os.walk(dir_path):
         # Just for testing/debugging
-        if count > 1:
-            continue
-        count += 1
+#         if count > 1:
+#             continue
+#         count += 1
 
         dirs[:] = [d for d in dirs if d not in ignore_list]  # modify dirs in-place
         for file in files:

@@ -116,15 +116,3 @@ def clone_repo(git_url, code_repo_path):
         print(f"Error: {e.output}")
 
     return repo_name
-
-#     print("Summarizing the repo...")
-#     readme_info = get_readme(code_repo_path)
-#     if readme_info is not None:
-#         readme_info = """The README.md file is as follows: """ + readme_info + "\n\n"
-#
-#     print("Parsing repo structure...")
-#     repo_structure = get_repo_structure(code_repo_path)
-#     if repo_structure is not None:
-#         repo_structure = """The repo structure is as follows: """ + get_repo_structure(code_repo_path) + "\n\n"
-#
-#     return readme_info + repo_structure
