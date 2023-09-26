@@ -52,3 +52,4 @@ def create_vdb(repo_url, code_repo_path, vdb_path):
     chunks = get_dir_chunks_recursively(code_repo_path)
     create_vdb_from_chunks(chunks, vdb_path)
     print("VDB generated!")
+    return True
