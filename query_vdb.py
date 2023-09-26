@@ -1,15 +1,12 @@
 import pinecone
 from langchain.vectorstores import FAISS, Pinecone
+from langchain.embeddings.openai import OpenAIEmbeddings
 
-def get_contexts_from_pinecone(query):
-
-
-def query_vdb(query):
+def query_vdb_for_context_docs(query, pinecone_index_name, repo_url):
     print("Querying VDB...")
-    matched_docs = Pinecone.similarity_search(query, k=10)
-    output = ""
-    for idx, docs in enumerate(matched_docs):
-        output += f"Context {idx}:\n"
-        output += str(docs)
-        output += "\n\n"
-    return output
+    repo_name = repo_url.split('/')[-1]
+    embeddings = OpenAIEmbeddings(disallowed_special=())
+    pinecone_index = pinecone.Index(pinecone_index_name)
+    pinecone_vdb = Pinecone(pinecone_index, embeddings.embed_query, repo_name)
+    context_docs = pinecone_vdb.similarity_search(query)
+    return context_docs

@@ -3,6 +3,8 @@ import functions_framework
 from vector_db import doIt
 from clone_repo import clone_repo
 from create_vdb import create_vdb
+from query_vdb import query_vdb_for_context_docs
+from query_llm import query_llm
 from dotenv import load_dotenv
 import pinecone
 
@@ -21,6 +23,7 @@ def http_llm(request):
     print(request.method)
     print(request.path)
 
+    # Just for testing/debugging - should be handled by create_vdb
     if 'clone_repo' in request.path and request.method == 'POST':
         request_json = request.get_json(silent=True)
         return clone_repo(request_json['git_url'], CODE_REPO_DIR)
@@ -32,6 +35,14 @@ def http_llm(request):
 
     if 'query_vdb' in request.path and request.method == 'POST':
         request_json = request.get_json(silent=True)
+        repo_url = request_json['git_url']
         query = request_json['query']
-        return create_vdb(request_json['git_url'], CODE_REPO_DIR, vdb_path)
+        return query_vdb_for_context_docs(query, PINECONE_INDEX, repo_url)
+
+    if 'query_llm' in request.path and request.method == 'POST':
+        request_json = request.get_json(silent=True)
+        repo_url = request_json['git_url']
+        query = request_json['query']
+        context_docs = query_vdb_for_context_docs(query, PINECONE_INDEX, repo_url)
+        return query_llm(query, context_docs)
 

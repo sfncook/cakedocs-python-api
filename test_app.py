@@ -17,6 +17,10 @@ def test_llm_http():
     response = http_llm(request)
     print(response)
 
+# I think this is deprecated and not used anymore
+def test_llm_upload_vdb():
+    upload_vdb("/Users/shawncook/Projects/CakeDocsAi/pythonEnv_3.8/tmp/vdb-designGuiStatic.pkl", 'vdb-designGuiStatic.pkl')
+
 def test_llm_git_clone():
     request = MockRequest(json_data={'git_url': 'https://github.com/sfncook/hello'})
     request.path = '/clone_repo'
@@ -31,16 +35,24 @@ def test_llm_create_vdb():
     response = http_llm(request)
     print(response)
 
-def test_llm_upload_vdb():
-    upload_vdb("/Users/shawncook/Projects/CakeDocsAi/pythonEnv_3.8/tmp/vdb-designGuiStatic.pkl", 'vdb-designGuiStatic.pkl')
+def test_llm_query_vdb():
+    request = MockRequest(json_data={'git_url': 'https://github.com/sfncook/hello', 'query': 'Describe this repo'})
+    request.path = '/query_vdb'
+    request.method = 'POST'
+    response = http_llm(request)
+    print(response)
 
-def test_clone_repo():
-    git_url = 'https://github.com/sfncook/designGuiStatic'
-    print(clone_repo(git_url))
+def test_llm_query_llm():
+    request = MockRequest(json_data={'git_url': 'https://github.com/sfncook/hello', 'query': 'Describe this repo'})
+    request.path = '/query_llm'
+    request.method = 'POST'
+    response = http_llm(request)
+    print(response)
 
 if __name__ == '__main__':
 #     test_clone_repo()
 #     test_llm_http()
 #     test_llm_git_clone()
-    test_llm_create_vdb()
-#     test_llm_upload_vdb()
+#     test_llm_create_vdb()
+#     test_llm_query_vdb()
+    test_llm_query_llm()
