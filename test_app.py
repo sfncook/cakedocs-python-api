@@ -24,7 +24,7 @@ def test_llm_create_vdb():
     print(response)
 
 def test_llm_query_vdb():
-    request = MockRequest(json_data={'git_url': 'https://github.com/sfncook/hello', 'query': 'Describe this repo'})
+    request = MockRequest(json_data={'git_url': 'https://github.com/sfncook/gpt-interview-coach', 'query': 'What languages and tools are used in this repo?'})
     request.path = '/query_vdb'
     request.method = 'POST'
     response = http_llm(request)
@@ -38,7 +38,4 @@ def test_llm_query_llm():
     print(response)
 
 if __name__ == '__main__':
-#     test_llm_clone_repo()
-#     test_llm_create_vdb()
-#     test_llm_query_vdb()
-    test_llm_query_llm()
+    test_llm_query_vdb()
