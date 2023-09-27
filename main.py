@@ -25,27 +25,28 @@ def http_llm(request):
     # Just for testing/debugging - should be handled by create_vdb
     if 'clone_repo' in request.path and request.method == 'POST':
         request_json = request.get_json(silent=True)
-        return clone_repo(request_json['git_url'], CODE_REPO_DIR)
+        return clone_repo(request_json['repo_url'], CODE_REPO_DIR)
 
     # Just for testing/debugging - should be handled by query_llm
     if 'query_vdb' in request.path and request.method == 'POST':
         request_json = request.get_json(silent=True)
-        repo_url = request_json['git_url']
+        repo_url = request_json['repo_url']
         query = request_json['query']
         return query_vdb_for_context_docs(query, PINECONE_INDEX, repo_url)
 
     ### 1. Clone the repo and ingest it into the VDB:
     if 'create_vdb' in request.path and request.method == 'POST':
         request_json = request.get_json(silent=True)
-        repo_url = request_json['git_url']
+        repo_url = request_json['repo_url']
         create_vdb(repo_url, CODE_REPO_DIR, TEMP_DIR, PINECONE_INDEX)
         return 'Ok'
 
     ### 2. Perform the chat query:
     if 'query_llm' in request.path and request.method == 'POST':
         request_json = request.get_json(silent=True)
-        repo_url = request_json['git_url']
+        repo_url = request_json['repo_url']
         query = request_json['query']
+        msgs = request_json['msgs']
         context_docs = query_vdb_for_context_docs(query, PINECONE_INDEX, repo_url)
-        return query_llm(query, context_docs)
+        return query_llm(query, context_docs, msgs)
 
