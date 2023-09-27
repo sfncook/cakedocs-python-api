@@ -3,8 +3,7 @@ from clone_repo import clone_repo
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 from langchain.document_loaders import TextLoader, PyPDFLoader
 from langchain.embeddings.openai import OpenAIEmbeddings
-from langchain.vectorstores import FAISS, Pinecone
-import pickle
+from langchain.vectorstores import Pinecone
 import pinecone
 
 def get_file_chunks(filename):
@@ -27,7 +26,7 @@ def get_dir_chunks_recursively(dir_path):
     ignore_list = ['.git', 'node_modules', '__pycache__', '.idea', '.vscode', 'package-lock.json', 'yarn.lock']
     chunks = []
     for root, dirs, files in os.walk(dir_path):
-        # Just for testing/debugging
+        # Only process first directory - For testing/debugging
 #         if count > 1:
 #             continue
 #         count += 1
@@ -44,23 +43,6 @@ def get_dir_chunks_recursively(dir_path):
                 print(f"Failed to process {filepath} due to error: {str(e)}")
     return chunks
 
-def create_vdb_from_chunks(chunks, temp_dir, repo_name):
-    print("Creating VDB from chunks...")
-    vdb_path = temp_dir + "/vdb-" + repo_name + ".pkl"
-    embedding = OpenAIEmbeddings(disallowed_special=())
-    if os.path.exists(vdb_path):
-        print(f"Deleting previous version of '{vdb_path}'")
-        os.remove(vdb_path)
-    print(f"Creating VDB {vdb_path}...")
-    faiss_store = FAISS.from_documents(chunks, embedding=embedding)
-    print(f"faiss_store: {faiss_store}")
-    with open(vdb_path, "wb") as f:
-        pickle.dump(faiss_store, f)
-    print("Done creating VDB from chunks!")
-    return faiss_store
-
-
-
 def store_chunks_in_pinecone(chunks, pinecone_index_name, repo_name):
     print("Storing chunks in Pinecone...")
     embeddings = OpenAIEmbeddings(disallowed_special=())
@@ -74,11 +56,7 @@ def create_vdb(repo_url, code_repo_path, temp_dir, pinecone_index_name):
     repo_name = repo_url.split('/')[-1]
 
     clone_repo(repo_url, code_repo_path)
-
     chunks = get_dir_chunks_recursively(code_repo_path)
-
-    # Pick one:
-#     create_vdb_from_chunks(chunks, temp_dir, repo_name)
     store_chunks_in_pinecone(chunks, pinecone_index_name, repo_name)
 
     print("VDB generated!")
