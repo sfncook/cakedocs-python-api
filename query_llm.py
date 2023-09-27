@@ -4,7 +4,8 @@ import json
 
 OPENAI_API_KEY = os.environ.get("OPENAI_API_KEY", "null")
 API_URL = "https://api.openai.com/v1/chat/completions"
-model = "gpt-3.5-turbo"
+# model = "gpt-3.5-turbo"
+model = "gpt-4-0613"
 
 init_system_prompt = """Now you are an expert programmer and teacher of a code repository.
     You will be asked to explain the code for a specific task in the repo.
