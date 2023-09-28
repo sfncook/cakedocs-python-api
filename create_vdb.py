@@ -33,12 +33,12 @@ def get_file_chunks(filename):
     print(f"Split {filename} into {len(chunks)} chunks")
     return chunks
 
-# TODO: Add repo_url and code_repo_path - Bug: Right now it's processing files for all repos
-def get_dir_chunks_recursively(dir_path):
+def get_dir_chunks_recursively(repo_name, code_repo_path):
+    repo_clone_dir = code_repo_path + "/" + repo_name
     count = 0
     ignore_list = ['.git', 'node_modules', '__pycache__', '.idea', '.vscode', 'package-lock.json', 'yarn.lock']
     chunks = []
-    for root, dirs, files in os.walk(dir_path):
+    for root, dirs, files in os.walk(repo_clone_dir):
         # Only process first directory - For testing/debugging
 #         if count > 1:
 #             continue
@@ -68,7 +68,7 @@ def create_vdb(repo_url, code_repo_path, temp_dir, pinecone_index_name):
     repo_name = repo_url.split('/')[-1]
 
     clone_repo(repo_url, code_repo_path)
-    chunks = get_dir_chunks_recursively(code_repo_path)
+    chunks = get_dir_chunks_recursively(repo_name, code_repo_path)
     store_chunks_in_pinecone(chunks, pinecone_index_name, repo_name)
 
     print("VDB generated!")
