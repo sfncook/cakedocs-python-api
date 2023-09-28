@@ -4,8 +4,8 @@ import openai
 
 OPENAI_API_KEY = os.environ.get("OPENAI_API_KEY", "null")
 API_URL = "https://api.openai.com/v1/chat/completions"
-model = "gpt-3.5-turbo"
-# model = "gpt-4-0613"
+# model = "gpt-3.5-turbo"
+model = "gpt-4-0613"
 
 openai.api_key = os.getenv("OPENAI_API_KEY")
 
@@ -20,7 +20,8 @@ init_system_prompt = """
 
 def query_llm(query, context_docs, msgs):
     print("Sending request to OpenAI API...")
-    prompt = query + f"\n\nHere are a few code and text snippets from the repository that are relevant to the question.  These snippets are not sorted in any particular order: \n\n"
+    prompt = f"Here is the user's question that you should attempt to answer: {query}\n\n"
+    prompt += f"And here are a few code and text snippets from the repository that are relevant to the question.  These snippets are not sorted in any particular order: \n\n"
     for idx, doc in enumerate(context_docs):
         prompt += f"Code snippet #{idx+1}:\n"
         prompt += f"  Filename: {doc.metadata['source']}\n"
