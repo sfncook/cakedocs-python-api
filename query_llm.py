@@ -56,6 +56,9 @@ def query_llm(query, context_docs, msgs):
         temperature=1,
         top_p=0.5,
     )
+    print("Response received from OpenAI API.")
     assistant_response = response.choices[0].message.content
-    print(assistant_response)
-    return assistant_response
+    return {
+        'assistant_response': assistant_response,
+        'usage': response.usage
+    }
