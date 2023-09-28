@@ -21,6 +21,7 @@ def get_file_chunks(filename):
     print(f"Split {filename} into {len(chunks)} chunks")
     return chunks
 
+# TODO: Add repo_url and code_repo_path - Bug: Right now it's processing files for all repos
 def get_dir_chunks_recursively(dir_path):
     count = 0
     ignore_list = ['.git', 'node_modules', '__pycache__', '.idea', '.vscode', 'package-lock.json', 'yarn.lock']
@@ -52,12 +53,22 @@ def store_chunks_in_pinecone(chunks, pinecone_index_name, repo_name):
 #     docsearch = Pinecone.from_documents(chunks, embeddings, index_name=pinecone_index_name)
     print("Done storing chunks in Pinecone!")
 
+def get_repo_file_list(repo_url, code_repo_path):
+    repo_clone_dir = code_repo_path + "/" + repo_name
+    file_list = []
+    for root, dirs, files in os.walk(repo_clone_dir):
+        for file in files:
+            file_path = os.path.join(root, file)
+            file_list.append(file_path)
+    return file_list
+
 def create_vdb(repo_url, code_repo_path, temp_dir, pinecone_index_name):
     repo_name = repo_url.split('/')[-1]
 
-    clone_repo(repo_url, code_repo_path)
-    chunks = get_dir_chunks_recursively(code_repo_path)
-    store_chunks_in_pinecone(chunks, pinecone_index_name, repo_name)
-
-    print("VDB generated!")
+    repo_file_list = get_repo_file_list(repo_url, code_repo_path)
+#     clone_repo(repo_url, code_repo_path)
+#     chunks = get_dir_chunks_recursively(code_repo_path)
+#     store_chunks_in_pinecone(chunks, pinecone_index_name, repo_name)
+#
+#     print("VDB generated!")
     return True

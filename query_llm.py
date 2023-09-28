@@ -4,8 +4,8 @@ import openai
 
 OPENAI_API_KEY = os.environ.get("OPENAI_API_KEY", "null")
 API_URL = "https://api.openai.com/v1/chat/completions"
-model = "gpt-3.5-turbo"
-# model = "gpt-4-0613"
+# model = "gpt-3.5-turbo"
+model = "gpt-4-0613"
 
 openai.api_key = os.getenv("OPENAI_API_KEY")
 
@@ -15,14 +15,13 @@ init_system_prompt = """
     You can ask the user for clarifying information if it is unclear what they want.
     You should modify your response based on the user's level of experience.  You can ask the user for their level of experience with software.
     You should always try to provide examples from the code or documents provided in order to help support your answer.
-    Do not mention the "context 0", "context 1", etc. in your response.  You may mention the filename of the context, but not the index of the context document.
 """
 
 def query_llm(query, context_docs, msgs):
     print("Sending request to OpenAI API...")
-    prompt = query + f"\n\nHere are some contexts about the question, which are ranked by the relevance to the question: \n\n"
+    prompt = query + f"\n\nHere are a few files from the repository that are relevant to the question.  These files are ranked in order of relevance from most-to-least relevant: \n\n"
     for idx, doc in enumerate(context_docs):
-        prompt += f"Context {idx}:\n"
+        prompt += f"File {idx+1}:\n"
         prompt += str(doc)
         prompt += "\n\n"
     token_limit = 8000
@@ -37,6 +36,15 @@ def query_llm(query, context_docs, msgs):
 
     # Add the user's current query to then end of messages
     messages.append({"role": "user", "content": f"{prompt}"})
+#     print("\nmsgs from client:")
+#     for msg in msgs:
+#         print(json.dumps(msg))
+#
+#     print("\nmessages sent to OAI:")
+#     for msg in messages:
+# #         print(json.dumps(msg))
+#         print( msg['role'] + ":" + msg['content'][0:20])
+#     print('\n')
 
     response = openai.ChatCompletion.create(
         model=model,
