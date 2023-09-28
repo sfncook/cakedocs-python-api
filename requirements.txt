@@ -17,3 +17,5 @@ sentence-transformers
 google-cloud-storage
 google-cloud-datastore
 pinecone-client
+unstructured
+markdown

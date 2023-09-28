@@ -1,7 +1,7 @@
 import os
 from clone_repo import clone_repo
-from langchain.text_splitter import RecursiveCharacterTextSplitter
-from langchain.document_loaders import TextLoader, PyPDFLoader
+from langchain.text_splitter import RecursiveCharacterTextSplitter, Language
+from langchain.document_loaders import TextLoader, PyPDFLoader, UnstructuredMarkdownLoader, UnstructuredHTMLLoader
 from langchain.embeddings.openai import OpenAIEmbeddings
 from langchain.vectorstores import Pinecone
 import pinecone
@@ -12,12 +12,24 @@ def get_file_chunks(filename):
         chunk_overlap=200,
         length_function=len,
     )
+    js_splitter = RecursiveCharacterTextSplitter.from_language(
+        language=Language.JS,
+        chunk_size=1500,
+        chunk_overlap=200,
+    )
     if filename.endswith(".pdf"):
         loader = PyPDFLoader(filename)
+    elif filename.endswith(".md"):
+        loader = UnstructuredMarkdownLoader(filename)
+    elif filename.endswith(".html"):
+        loader = UnstructuredHTMLLoader(filename)
     else:
         loader = TextLoader(filename)
-    documents = loader.load()
-    chunks = text_splitter.split_documents(documents)
+    document = loader.load()
+    if filename.endswith(".js"):
+        chunks = js_splitter.split_documents(document)
+    else:
+        chunks = text_splitter.split_documents(document)
     print(f"Split {filename} into {len(chunks)} chunks")
     return chunks
 
@@ -36,7 +48,7 @@ def get_dir_chunks_recursively(dir_path):
         for file in files:
             if file in ignore_list:
                 continue
-            print(f"Processing file {file}")
+#             print(f"Processing file {file}")
             filepath = os.path.join(root, file)
             try:
                 chunks.extend(get_file_chunks(filepath))
@@ -50,7 +62,6 @@ def store_chunks_in_pinecone(chunks, pinecone_index_name, repo_name):
     pinecone_index = pinecone.Index(pinecone_index_name)
     pinecone_vdb = Pinecone(pinecone_index, embeddings.embed_query, repo_name)
     pinecone_vdb.add_documents(chunks)
-#     docsearch = Pinecone.from_documents(chunks, embeddings, index_name=pinecone_index_name)
     print("Done storing chunks in Pinecone!")
 
 def create_vdb(repo_url, code_repo_path, temp_dir, pinecone_index_name):
