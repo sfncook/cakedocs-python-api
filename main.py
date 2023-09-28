@@ -48,6 +48,7 @@ def http_llm(request):
         repo_url = request_json['repo_url']
         query = request_json['query']
         msgs = request_json['msgs']
+        model = request_json['model']
         context_docs = query_vdb_for_context_docs(query, PINECONE_INDEX, repo_url)
-        return query_llm(query, context_docs, msgs)
+        return query_llm(query, context_docs, msgs, model)
 
