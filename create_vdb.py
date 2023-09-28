@@ -5,6 +5,7 @@ from langchain.document_loaders import TextLoader, PyPDFLoader, UnstructuredMark
 from langchain.embeddings.openai import OpenAIEmbeddings
 from langchain.vectorstores import Pinecone
 import pinecone
+from utils import get_repo_name_from_url
 
 def get_file_chunks(filename):
     text_splitter = RecursiveCharacterTextSplitter(
@@ -33,8 +34,7 @@ def get_file_chunks(filename):
     print(f"Split {filename} into {len(chunks)} chunks")
     return chunks
 
-def get_dir_chunks_recursively(repo_name, code_repo_path):
-    repo_clone_dir = code_repo_path + "/" + repo_name
+def get_dir_chunks_recursively(repo_clone_dir):
     count = 0
     ignore_list = ['.git', 'node_modules', '__pycache__', '.idea', '.vscode', 'package-lock.json', 'yarn.lock']
     chunks = []
@@ -68,10 +68,10 @@ def store_chunks_in_pinecone(chunks, pinecone_index_name, repo_name):
     print("Done storing chunks in Pinecone!")
 
 def create_vdb(repo_url, code_repo_path, temp_dir, pinecone_index_name):
-    repo_name = repo_url.split('/')[-1]
+    repo_name = get_repo_name_from_url(repo_url)
 
-    clone_repo(repo_url, code_repo_path)
-    chunks = get_dir_chunks_recursively(repo_name, code_repo_path)
+    repo_clone_dir = clone_repo(repo_url, code_repo_path)
+    chunks = get_dir_chunks_recursively(repo_clone_dir)
     store_chunks_in_pinecone(chunks, pinecone_index_name, repo_name)
 
     print("VDB generated!")
