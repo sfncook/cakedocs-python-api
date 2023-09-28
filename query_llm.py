@@ -4,8 +4,8 @@ import openai
 
 OPENAI_API_KEY = os.environ.get("OPENAI_API_KEY", "null")
 API_URL = "https://api.openai.com/v1/chat/completions"
-# model = "gpt-3.5-turbo"
-model = "gpt-4-0613"
+model = "gpt-3.5-turbo"
+# model = "gpt-4-0613"
 
 openai.api_key = os.getenv("OPENAI_API_KEY")
 
@@ -19,17 +19,21 @@ init_system_prompt = """
 
 def query_llm(query, context_docs, msgs):
     print("Sending request to OpenAI API...")
-    prompt = query + f"\n\nHere are a few files from the repository that are relevant to the question.  These files are ranked in order of relevance from most-to-least relevant: \n\n"
+    prompt = query + f"\n\nHere are a few code and text snippets from the repository that are relevant to the question.  These snippets are not sorted in any particular order: \n\n"
     for idx, doc in enumerate(context_docs):
-        prompt += f"File {idx+1}:\n"
-        prompt += str(doc)
+        prompt += f"Code snippet #{idx+1}:\n"
+        prompt += f"From file: {doc.metadata['source']}\n"
+        prompt += f"Snippet: {doc.page_content}\n"
         prompt += "\n\n"
     token_limit = 8000
     if len(prompt) > token_limit:
-        prompt = inputs[:token_limit]
+        print("Prompt too long.  Truncating...")
+        prompt = prompt[:token_limit]
+        print(prompt)
+#     print("\n\nPrompt: ", prompt)
 
     messages = [{"role": 'system', "content": init_system_prompt}]
-    for msg in msgs:
+    for msg in msgs[:10]:
 #         print(json.dumps(msg))
         messages.append({"role": msg['role'].lower(), "content": msg['msg']})
 #     print(json.dumps(messages))

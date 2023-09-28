@@ -6,6 +6,7 @@ from query_vdb import query_vdb_for_context_docs
 from query_llm import query_llm
 from dotenv import load_dotenv
 import pinecone
+import json
 
 load_dotenv()
 
