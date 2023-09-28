@@ -60,7 +60,10 @@ def store_chunks_in_pinecone(chunks, pinecone_index_name, repo_name):
     print("Storing chunks in Pinecone...")
     embeddings = OpenAIEmbeddings(disallowed_special=())
     pinecone_index = pinecone.Index(pinecone_index_name)
-    pinecone_vdb = Pinecone(pinecone_index, embeddings.embed_query, repo_name)
+    pinecone_vdb = Pinecone(pinecone_index, embeddings.embed_query, "cakedocs", namespace=repo_name)
+    pinecone_vdb.delete(delete_all=True, namespace=repo_name)
+    print("Done deleting previous chunks from Pinecone!")
+    print(f"Adding chunks for {repo_name} to Pinecone...")
     pinecone_vdb.add_documents(chunks)
     print("Done storing chunks in Pinecone!")
 
