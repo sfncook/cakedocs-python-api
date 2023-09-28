@@ -15,6 +15,7 @@ init_system_prompt = """
     You can ask the user for clarifying information if it is unclear what they want.
     You should modify your response based on the user's level of experience.  You can ask the user for their level of experience with software.
     You should always try to provide examples from the code or documents provided in order to help support your answer.
+    When you quote the snippets always provide the file name.
 """
 
 def query_llm(query, context_docs, msgs):
@@ -22,8 +23,8 @@ def query_llm(query, context_docs, msgs):
     prompt = query + f"\n\nHere are a few code and text snippets from the repository that are relevant to the question.  These snippets are not sorted in any particular order: \n\n"
     for idx, doc in enumerate(context_docs):
         prompt += f"Code snippet #{idx+1}:\n"
-        prompt += f"From file: {doc.metadata['source']}\n"
-        prompt += f"Snippet: {doc.page_content}\n"
+        prompt += f"  Filename: {doc.metadata['source']}\n"
+        prompt += f"  Contents: {doc.page_content}\n"
         prompt += "\n\n"
     token_limit = 8000
     if len(prompt) > token_limit:
