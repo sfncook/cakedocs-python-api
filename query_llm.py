@@ -29,7 +29,7 @@ def query_llm(query, context_docs, msgs):
     if len(prompt) > token_limit:
         print("Prompt too long.  Truncating...")
         prompt = prompt[:token_limit]
-        print(prompt)
+#         print(prompt)
 #     print("\n\nPrompt: ", prompt)
 
     messages = [{"role": 'system', "content": init_system_prompt}]
@@ -50,17 +50,6 @@ def query_llm(query, context_docs, msgs):
 #         print( msg['role'] + ":" + msg['content'][0:20])
 #     print('\n')
 
-    response = openai.ChatCompletion.create(
-        model=model,
-        messages=messages,
-        temperature=1,
-        top_p=0.5,
-    )
-    assistant_response = response.choices[0].message.content
-    print(assistant_response)
-    return assistant_response
-
-def analyze_repo_for_language(repo_file_list):
     response = openai.ChatCompletion.create(
         model=model,
         messages=messages,

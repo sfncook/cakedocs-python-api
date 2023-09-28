@@ -8,5 +8,5 @@ def query_vdb_for_context_docs(query, pinecone_index_name, repo_url):
     embeddings = OpenAIEmbeddings(disallowed_special=())
     pinecone_index = pinecone.Index(pinecone_index_name)
     pinecone_vdb = Pinecone(pinecone_index, embeddings.embed_query, repo_name)
-    context_docs = pinecone_vdb.similarity_search(query, k=10)
+    context_docs = pinecone_vdb.similarity_search(query, k=4)
     return context_docs
