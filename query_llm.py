@@ -15,6 +15,7 @@ init_system_prompt = """
     You can ask the user for clarifying information if it is unclear what they want.
     You should modify your response based on the user's level of experience.  You can ask the user for their level of experience with software.
     You should always try to provide examples from the code or documents provided in order to help support your answer.
+    Do not mention the "context 0", "context 1", etc. in your response.  You may mention the filename of the context, but not the index of the context document.
 """
 
 def query_llm(query, context_docs, msgs):
