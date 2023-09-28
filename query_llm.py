@@ -9,13 +9,12 @@ model = "gpt-3.5-turbo"
 
 openai.api_key = os.getenv("OPENAI_API_KEY")
 
-init_system_prompt = """Now you are an expert programmer and teacher of a code repository.
-    You will be asked to explain the code for a specific task in the repo.
-    You will be provided with some related code snippets or documents related to the question.
-    Please think the explanation step-by-step.
-    Please answer the questions based on your knowledge, and you can also refer to the provided related code snippets.
-    The README.md file and the repo structure are also available for your reference.
-    If you need any details clarified, please ask questions until all issues are clarified. \n\n
+init_system_prompt = """
+    You are an expert software engineer who is explaining and sometimes writing documentation that describes a code repository.
+    You will be provided with some code snippets or documents from the repository.  Answer the user's questions to the best of your ability.
+    You can ask the user for clarifying information if it is unclear what they want.
+    You should modify your response based on the user's level of experience.  You can ask the user for their level of experience with software.
+    You should always try to provide examples from the code or documents provided in order to help support your answer.
 """
 
 def query_llm(query, context_docs, msgs):
@@ -29,12 +28,26 @@ def query_llm(query, context_docs, msgs):
     if len(prompt) > token_limit:
         prompt = inputs[:token_limit]
 
-    messages = [{"role": "user", "content": f"{prompt}"}]
+    messages = [{"role": 'system', "content": init_system_prompt}]
     for msg in msgs:
 #         print(json.dumps(msg))
         messages.append({"role": msg['role'].lower(), "content": msg['msg']})
 #     print(json.dumps(messages))
 
+    # Add the user's current query to then end of messages
+    messages.append({"role": "user", "content": f"{prompt}"})
+
+    response = openai.ChatCompletion.create(
+        model=model,
+        messages=messages,
+        temperature=1,
+        top_p=0.5,
+    )
+    assistant_response = response.choices[0].message.content
+    print(assistant_response)
+    return assistant_response
+
+def analyze_repo_for_language(repo_file_list):
     response = openai.ChatCompletion.create(
         model=model,
         messages=messages,
